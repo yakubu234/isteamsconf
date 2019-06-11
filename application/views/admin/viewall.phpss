@@ -1,0 +1,97 @@
+      <?php 
+      $email =  $this->session->userdata['logged_in']['email'];
+      if ($email == '' ) {
+        redirect(base_url().'welcome/index');
+      }else{
+        $firstname =  $this->session->userdata['logged_in']['firstname'];
+        $surname = $this->session->userdata['logged_in']['surname'] ;
+        $type = $this->session->userdata['logged_in']['type'] ;
+        $id = $this->session->userdata['logged_in']['id'] ;
+        $phone = $this->session->userdata['logged_in']['phone'] ;
+        $role = $this->session->userdata['logged_in']['role'] ;
+        $gender = $this->session->userdata['logged_in']['gender'] ;
+        $todos = $this->session->userdata['logged_in']['todos'] ;
+        $total = '4';
+      }
+
+      $query = $this->db->query('SELECT * FROM user');
+      $num_of_user = $query->num_rows();
+      $query = $this->db->query('SELECT * FROM todolist');
+      $total_tasks = $query->num_rows();
+      ?>
+<!doctype html> 
+<html> 
+<head> 
+    <title>DataTables and Codeigniter</title> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
+    <!--data table--> 
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/pdfmake-0.1.18/dt-1.10.12/b-1.2.2/b-colvis-1.2.2/b-html5-1.2.2/b-print-1.2.2/r-2.1.0/datatables.min.css" /> 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/pdfmake-0.1.18/dt-1.10.12/b-1.2.2/b-colvis-1.2.2/b-html5-1.2.2/b-print-1.2.2/r-2.1.0/datatables.min.js"></script> 
+    <!--/.data table--> 
+    <style> 
+        body { 
+            padding: 15px; 
+        } 
+    </style> 
+</head> 
+<body> 
+    <div class="col-sm-12" >
+      <div class="row"> 
+        <div class="col-sm-12  middle1" >
+          <table id="myTable" class="table table-bordered table-striped table-hover" >
+            <thead>
+             <tr>
+              <th>S/N</th>
+              <th>Assigned By</th>
+              <th>subject</th>
+              <th>time frame</th>
+              <th>Role</th>
+              <th>Date Assigned</th>                            
+              <th></th>
+              <th></th>
+              <th></th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+            $start = 0 ;
+            if ($billings) {
+              foreach ($billings as $billing){?>
+                <tr>
+                  <td><?php echo ++$start ?> </td>
+                  <td><?php echo $billing->firstname. " " . $billing->surname  ; ?></td>
+                  <td><?php echo $billing->subject ; ?></td>
+                  <td><?php $date = $billing->timeframe ; 
+                  $new_datetime = DateTime::createFromFormat ( "Y-m-d", $date );echo $new_datetime->format('d/m/y');
+                  ?></td>
+                  <td><?php echo $billing->role; ?></td>
+                  <td><?php $date = $billing->time; 
+                  $new_datetime = DateTime::createFromFormat ( "Y-m-d H:i:s", $date );echo $new_datetime->format('d/m/y H:i:s');
+                  ?></td>
+                  <td>
+                    <a href="<?php echo base_url('welcome/show/'.$billing->id); ?>" ><button><span title="view" class="fa fa-search-plus text-success" ></span></button></a>
+                  </td> 
+                  <td>
+                    <a href="<?php echo base_url('welcome/edit_todo/'.$billing->id); ?>" ><button><span title="Edit" class="fa fa-pencil-square-o text-primary" ></span></button></a>
+                  </td> 
+                  <td>
+                    <a href="<?php echo base_url('welcome/delete/'.$billing->id); ?>" ><button><span title="Delete" class="fa fa-trash-o redr" ></span></button></a>
+                  </td>  
+                <?php }
+              } ?>
+            </tr> 
+          </tbody>
+        </table>
+      </div>
+    </div>                    
+  </div>
+    <script type="text/javascript"> 
+        $(document).ready(function() { 
+            $("#myTable").dataTable(); 
+        }); 
+    </script> 
+</body> 
+</html>
